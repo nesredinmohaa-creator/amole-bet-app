@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AmoleBet | Premium Ethiopian Gaming Hub</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            appDarkBg: '#0d110e',      /* Obsidian black-green background from screenshots */
+            brandCard: '#181c19',       /* Dark gray-green elements */
+            inputBorder: '#52462a',    /* Dark bronze-gold borders */
+            brandGreen: '#00a859',     /* Exact signature green */
+            brandGold: '#ffc107',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0d110e;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .amole-input {
+      background-color: #151916;
+      border: 1px solid #52462a;
+      border-radius: 0.75rem;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Animation for floating elements */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .floating-anim {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col justify-between overflow-x-hidden pb-24 select-none">
+
+  <!-- ================= DEVELOPER SYSTEM SWITCH BOARD (TOP BAR) ================= -->
+  <div class="bg-yellow-500 text-black text-[11px] font-black py-1.5 px-4 flex justify-between items-center z-50 relative">
+    <span>⚙️ SYSTEM ROLE MANAGER:</span>
+    <div class="flex gap-2">
+      <button onclick="changeRole('player')" id="role-player-btn" class="bg-black text-white px-2 py-0.5 rounded font-bold uppercase">Player View</button>
+      <button onclick="changeRole('admin')" id="role-admin-btn" class="bg-black/20 text-black px-2 py-0.5 rounded font-bold uppercase">Admin Panel (<span id="pending-count-badge">0</span>)</button>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 1: REGISTER / SIGN UP SCREEN (EXACT MATCH) ================= -->
+  <div id="auth-screen" class="flex-1 flex flex-col justify-center p-6 max-w-md w-full mx-auto">
+    <div class="flex flex-col gap-6">
+      
+      <!-- Logo -->
+      <div class="text-center flex justify-center items-center py-2">
+        <h1 class="text-2xl font-black tracking-tighter text-white">amole<span class="text-brandGreen">bet</span></h1>
+      </div>
+
+      <!-- Navigation Tabs (Sign In / Sign Up) -->
+      <div class="grid grid-cols-2 gap-1 bg-[#141a16] p-1 rounded-xl border border-white/5">
+        <button onclick="toggleAuthTab('signin')" id="tab-signin" class="py-2 rounded-lg text-xs font-bold text-gray-400 transition">Sign In</button>
+        <button onclick="toggleAuthTab('signup')" id="tab-signup" class="py-2 rounded-lg text-xs font-bold bg-[#252b27] text-white transition border border-white/5">Sign Up</button>
+      </div>
+
+      <!-- Sign Up Input Fields -->
+      <div id="signup-fields" class="flex flex-col gap-4">
+        <div>
+          <label class="text-xs text-gray-400 font-bold block mb-1.5">Phone</label>
+          <div class="amole-input flex items-center px-4 py-2">
+            <span class="text-xs font-bold text-gray-400 mr-2 border-r border-white/10 pr-2">+251</span>
+            <input type="tel" id="reg-phone" placeholder="Phone" class="bg-transparent text-sm w-full text-white py-1 focus:outline-none font-bold">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-gray-400 font-bold block mb-1.5">Password</label>
+          <div class="amole-input flex items-center px-4 py-2">
+            <input type="password" id="reg-pass" placeholder="Password" class="bg-transparent text-sm w-full text-white py-1 focus:outline-none font-bold">
+            <button onclick="viewPassword('reg-pass')" class="text-gray-400 text-xs px-1"><i class="fa-solid fa-eye-slash"></i></button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-gray-400 font-bold block mb-1.5">Confirm Password</label>
+          <div class="amole-input flex items-center px-4 py-2">
+            <input type="password" id="reg-confirm" placeholder="Confirm Password" class="bg-transparent text-sm w-full text-white py-1 focus:outline-none font-bold">
+            <button onclick="viewPassword('reg-confirm')" class="text-gray-400 text-xs px-1"><i class="fa-solid fa-eye-slash"></i></button>
+          </div>
+        </div>
+
+        <!-- Green Complete Button with X Icon from your screenshot -->
+        <button onclick="triggerVerificationStep()" class="w-full bg-brandGreen hover:brightness-105 text-white font-extrabold py-3.5 px-4 rounded-xl transition active:scale-95 text-xs tracking-wider flex justify-between items-center mt-2">
+          <span class="mx-auto pl-4 font-bold">Complete Registration</span>
+          <span><i class="fa-regular fa-circle-xmark text-base"></i></span>
+        </button>
+      </div>
+
+      <!-- Sign In Fields -->
+      <div id="signin-fields" class="hidden flex flex-col gap-4">
+        <div>
+          <label class="text-xs text-gray-400 font-bold block mb-1.5">Phone</label>
+          <div class="amole-input flex items-center px-4 py-2">
+            <span class="text-xs font-bold text-gray-400 mr-2 border-r border-white/10 pr-2">+251</span>
+            <input type="tel" id="login-phone" placeholder="Phone" class="bg-transparent text-sm w-full text-white py-1 focus:outline-none font-bold">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-gray-400 font-bold block mb-1.5">Password</label>
+          <div class="amole-input flex items-center px-4 py-2">
+            <input type="password" id="login-pass" placeholder="Password" class="bg-transparent text-sm w-full text-white py-1 focus:outline-none font-bold">
+            <button onclick="viewPassword('login-pass')" class="text-gray-400 text-xs px-1"><i class="fa-solid fa-eye-slash"></i></button>
+          </div>
+        </div>
+
+        <button onclick="loginUser()" class="w-full bg-brandGreen text-white font-bold py-3.5 rounded-xl text-xs active:scale-95 transition">
+          Sign In
+        </button>
+      </div>
+
+      <!-- Verification Step (OTP Screen) -->
+      <div id="otp-fields" class="hidden flex flex-col gap-4">
+        <div class="text-center bg-brandCard p-4 rounded-2xl border border-white/5">
+          <p class="text-xs text-brandGreen font-bold">✓ SMS Dispatched</p>
+          <p class="text-[10px] text-gray-400 mt-1">Please enter your 4-digit code below to unlock your dashboard.</p>
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 font-bold block mb-1.5">SMS Activation Code</label>
+          <div class="amole-input flex items-center px-4 py-2">
+            <input type="text" id="otp-input" placeholder="Enter Code" class="bg-transparent text-center font-mono font-bold tracking-widest text-sm w-full text-white py-1 focus:outline-none">
+          </div>
+          <span class="text-[9px] text-gray-500 block mt-1.5 text-center font-bold">Registration Verification Code is: <span class="text-brandGreen">1234</span></span>
+        </div>
+        <button onclick="verifyUserOTP()" class="w-full bg-brandGreen text-white font-black py-3.5 rounded-xl text-xs active:scale-95 transition">
+          Verify and Activate Account
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 2 & 3: MAIN SPORTS/CASINO GATEWAY ================= -->
+  <div id="main-portal" class="hidden flex-col">
+    
+    <!-- Header with 0.44 ETB Balance (Exact Match to Screenshot 2) -->
+    <header class="bg-[#141a16] border-b border-white/5 p-4 sticky top-0 z-30 flex justify-between items-center max-w-lg w-full mx-auto">
+      <div class="flex items-center gap-2">
+        <h1 class="text-lg font-black text-white">amole<span class="text-brandGreen">bet</span></h1>
+        <span class="text-lg animate-bounce cursor-pointer" onclick="openCashier('deposit')">🎁</span>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <!-- Balance Pill (Green Icon + Value ETB) -->
+        <div onclick="openCashier('deposit')" class="cursor-pointer bg-[#1b261f] border border-[#2d3e33] px-3 py-1.5 rounded-full flex items-center gap-2 shadow">
+          <div class="bg-brandGreen text-white rounded-full w-4.5 h-4.5 flex items-center justify-center text-[9px] font-bold">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+          <span class="text-xs font-black text-white"><span id="user-balance-lbl">0.44</span> <span class="text-[9px] text-brandGreen font-black">ETB</span></span>
+        </div>
+
+        <div class="w-8 h-8 rounded-full bg-brandCard border border-white/10 flex items-center justify-center text-xs relative" onclick="switchMainTab('profile')">
+          👤
+          <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Slider Category list -->
+    <div class="bg-[#141a16] border-b border-white/5 py-3 overflow-x-auto no-scrollbar max-w-lg w-full mx-auto">
+      <div class="flex gap-4 px-4 text-[10px] font-black text-gray-400 uppercase tracking-wider whitespace-nowrap">
+        <button onclick="switchMainTab('home')" class="hover:text-white flex flex-col items-center gap-1">⚽ SPORTS</button>
+        <button onclick="switchMainTab('chicken')" class="text-brandGold flex items-center gap-1">🐓 CHICKEN ROAD 2.0 <span class="text-[7px] bg-red-600 text-white px-1 rounded font-black">NEW</span></button>
+        <button onclick="switchMainTab('aviator')" class="hover:text-white flex flex-col items-center gap-1">✈️ AVIATOR</button>
+        <button onclick="switchMainTab('penalty')" class="hover:text-white flex flex-col items-center gap-1">⚽ PENALTY</button>
+        <button onclick="switchMainTab('roulette')" class="hover:text-white flex flex-col items-center gap-1">🎰 TINY ROULETTE</button>
+      </div>
+    </div>
+
+    <!-- Scrollable Arena Body -->
+    <main class="max-w-lg w-full mx-auto px-4 py-4 flex flex-col gap-6">
+
+      <!-- ─── VIEW 1: HOME (LOBBY & SPORTS) ─── -->
+      <div id="view-home" class="view-content flex flex-col gap-5">
+        
+        <!-- Virtual Sports banner layout -->
+        <div>
+          <h2 class="text-base font-black text-white tracking-tight mb-3">Virtual Sports</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-brandCard rounded-2xl p-4 border border-white/5 relative h-36 flex flex-col justify-between cursor-pointer" onclick="switchMainTab('penalty')">
+              <span class="bg-yellow-500 text-black text-[8px] font-black px-1.5 py-0.5 rounded w-max font-bold">GOLDEN RACE</span>
+              <div>
+                <h4 class="font-extrabold text-xs">PENALTY LOBBY</h4>
+                <p class="text-[9px] text-gray-500">Virtual Sports</p>
+              </div>
+            </div>
+            <div class="bg-brandCard rounded-2xl p-4 border border-white/5 relative h-36 flex flex-col justify-between cursor-pointer" onclick="switchMainTab('chicken')">
+              <span class="bg-brandGreen text-white text-[8px] font-black px-1.5 py-0.5 rounded w-max font-bold">CHICKEN ROAD</span>
+              <div>
+                <h4 class="font-extrabold text-xs">ROADWAY</h4>
+                <p class="text-[9px] text-gray-500">Steps Game</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Winners Block from Screenshot 2 -->
+        <div>
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Recent Casino Wins</h3>
+          <div class="flex gap-2 overflow-x-auto no-scrollbar">
+            <div class="bg-brandCard p-3 rounded-2xl min-w-[110px] text-center border border-white/5">
+              <p class="text-[10px] font-black text-brandGold">CHICKEN</p>
+              <p class="text-[8px] text-gray-400 mt-1">+******3</p>
+              <p class="text-[10px] font-black text-brandGreen mt-1">ETB 140.23</p>
+            </div>
+            <div class="bg-brandCard p-3 rounded-2xl min-w-[110px] text-center border border-white/5">
+              <p class="text-[10px] font-black text-brandGold">AVIATOR</p>
+              <p class="text-[8px] text-gray-400 mt-1">+******3</p>
+              <p class="text-[10px] font-black text-brandGreen mt-1">ETB 76.2k</p>
+            </div>
+            <div class="bg-brandCard p-3 rounded-2xl min-w-[110px] text-center border border-white/5">
+              <p class="text-[10px] font-black text-gray-400">PENALTY</p>
+              <p class="text-[8px] text-gray-400 mt-1">+******4</p>
+              <p class="text-[10px] font-black text-brandGreen mt-1">ETB 550.00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sports Betting Matches layout from Screenshot 3 -->
+        <div>
+          <h2 class="text-base font-black mb-3">Sports Matches</h2>
+          <div class="bg-brandCard border border-white/5 p-4 rounded-2xl flex flex-col gap-3">
+            <div class="flex justify-between text-[9px] text-gray-500 uppercase font-bold">
+              <span>English Premier League</span>
+              <span class="text-brandGreen">Live 64'</span>
+            </div>
+            <div class="flex justify-between items-center font-bold">
+              <h3 class="font-extrabold text-xs">Arsenal vs Chelsea</h3>
+              <span class="text-xs font-bold text-brandGold">2 - 1</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 font-bold">
+              <div onclick="sportsBetStake('Arsenal', 2.28)" class="bg-black/30 p-2.5 rounded-xl text-center cursor-pointer border border-white/5 hover:bg-brandGreen/20">
+                <span class="text-[9px] text-gray-500 block font-bold">1</span>
+                <span class="text-xs font-black text-brandGreen">2.28</span>
+              </div>
+              <div onclick="sportsBetStake('Draw', 3.27)" class="bg-black/30 p-2.5 rounded-xl text-center cursor-pointer border border-white/5 hover:bg-brandGreen/20">
+                <span class="text-[9px] text-gray-500 block font-bold">X</span>
+                <span class="text-xs font-black text-brandGreen">3.27</span>
+              </div>
+              <div onclick="sportsBetStake('Chelsea', 3.26)" class="bg-black/30 p-2.5 rounded-xl text-center cursor-pointer border border-white/5 hover:bg-brandGreen/20">
+                <span class="text-[9px] text-gray-500 block font-bold">2</span>
+                <span class="text-xs font-black text-brandGreen">3.26</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ─── VIEW 2: CHICKEN ROAD 2.0 (NEW STEPPING GAME) ─── -->
+      <div id="view-chicken" class="view-content hidden flex flex-col gap-4">
+        <div class="bg-brandCard border border-white/5 rounded-3xl p-5 flex flex-col gap-4 text-center">
+          <div>
+            <span class="bg-brandGold text-black text-[9px] font-black px-2 py-0.5 rounded font-black">CHICKEN ROAD 2.0</span>
+            <p class="text-xs text-gray-400 mt-1">Cross the roadway steps successfully. Don't step on fried chicken!</p>
+          </div>
+
+          <!-- Vertical road tiles -->
+          <div class="grid grid-rows-4 gap-2 bg-black/40 p-4 rounded-2xl border border-white/5 max-w-xs mx-auto w-full">
+            <!-- Row 4 -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="playChickenStep(3, 0)" id="ch-tile-3-0" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40">Lane 1</button>
+              <button onclick="playChickenStep(3, 1)" id="ch-tile-3-1" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40">Lane 2</button>
+            </div>
+            <!-- Row 3 -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="playChickenStep(2, 0)" id="ch-tile-2-0" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40" disabled>Lane 1</button>
+              <button onclick="playChickenStep(2, 1)" id="ch-tile-2-1" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40" disabled>Lane 2</button>
+            </div>
+            <!-- Row 2 -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="playChickenStep(1, 0)" id="ch-tile-1-0" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40" disabled>Lane 1</button>
+              <button onclick="playChickenStep(1, 1)" id="ch-tile-1-1" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40" disabled>Lane 2</button>
+            </div>
+            <!-- Row 1 -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="playChickenStep(0, 0)" id="ch-tile-0-0" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40" disabled>Lane 1</button>
+              <button onclick="playChickenStep(0, 1)" id="ch-tile-0-1" class="bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40" disabled>Lane 2</button>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex flex-col gap-2.5 max-w-xs mx-auto w-full mt-1">
+            <div class="flex justify-between items-center text-xs px-2">
+              <span class="text-gray-400 font-bold">Multiplier:</span>
+              <span id="ch-multi-lbl" class="font-mono font-black text-brandGold text-sm">1.00x</span>
+            </div>
+            <div class="flex gap-2">
+              <input type="number" id="ch-bet-amt" placeholder="Bet Stake" class="bg-black/50 text-xs text-white p-3 rounded-xl border border-white/10 font-bold focus:outline-none w-1/2">
+              <button onclick="startChickenGame()" id="ch-act-btn" class="bg-brandGreen text-white font-black text-xs py-3 rounded-xl w-1/2">Start Wager</button>
+            </div>
+            <button onclick="cashoutChickenGame()" id="ch-cash-btn" class="w-full bg-[#ffc107] text-black font-black text-xs py-3 rounded-xl hidden">Cash Out Payout</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── VIEW 3: AVIATOR (DOWNHILL CANV FLYING VECTOR) ─── -->
+      <div id="view-aviator" class="view-content hidden flex flex-col gap-4">
+        <div class="bg-brandCard border border-white/5 rounded-3xl p-5 flex flex-col justify-between h-80 relative overflow-hidden">
+          <div class="flex justify-between items-center z-10">
+            <span class="text-[9px] bg-red-600 text-white px-2 py-0.5 rounded font-bold">AVIATOR CRASH</span>
+            <span class="text-xs font-mono text-gray-400">Target: Live</span>
+          </div>
+
+          <div class="relative w-full h-40 flex items-center justify-center">
+            <canvas id="aviator-canvas" class="absolute inset-0 w-full h-full bg-[#05030d] rounded-2xl border border-white/5"></canvas>
+            <h1 id="av-multiplier" class="absolute text-5xl font-black text-brandGold font-mono">1.00x</h1>
+            <p id="av-bust-lbl" class="absolute text-red-500 font-extrabold uppercase tracking-widest text-sm hidden">Flew Away!</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 z-10">
+            <input type="number" id="av-bet" placeholder="Bet Stake (ETB)" class="bg-black/40 text-xs p-3 rounded-xl border border-white/10 font-bold focus:outline-none">
+            <button onclick="runAviator()" id="av-btn" class="bg-brandGreen text-white font-black rounded-xl text-xs transition">Place Bet</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── VIEW 4: PENALTY KICK (GOLDEN RACE BALL GAME) ─── -->
+      <div id="view-penalty" class="view-content hidden flex flex-col gap-4">
+        <div class="bg-brandCard border border-white/5 rounded-3xl p-5 flex flex-col gap-4 text-center relative overflow-hidden">
+          <div>
+            <span class="bg-brandGreen text-white text-[9px] font-black px-2 py-0.5 rounded">PENALTY OUT</span>
+            <p class="text-xs text-gray-400 mt-1">Select shoot lane target. Beat the Goalkeeper to score and win!</p>
+          </div>
+
+          <!-- Goal net graphic selector -->
+          <div class="relative bg-blue-900/40 border-4 border-white h-32 rounded-xl flex justify-between items-end px-6 max-w-xs mx-auto w-full overflow-hidden">
+            <!-- Goalkeeper -->
+            <div id="goalie-emoji" class="absolute bottom-2 left-1/2 -translate-x-1/2 text-4xl transition-all duration-300">🧤</div>
+
+            <button onclick="shootPenalty('left')" class="h-24 w-16 bg-white/5 hover:bg-white/10 rounded-t border-r border-dashed border-white/10 font-black text-[10px] text-white/50 pb-2 flex items-end justify-center">LEFT</button>
+            <button onclick="shootPenalty('center')" class="h-24 w-16 bg-white/5 hover:bg-white/10 rounded-t border-x border-dashed border-white/10 font-black text-[10px] text-white/50 pb-2 flex items-end justify-center">CENTER</button>
+            <button onclick="shootPenalty('right')" class="h-24 w-16 bg-white/5 hover:bg-white/10 rounded-t border-l border-dashed border-white/10 font-black text-[10px] text-white/50 pb-2 flex items-end justify-center">RIGHT</button>
+          </div>
+
+          <div class="flex gap-2 max-w-xs mx-auto w-full mt-1">
+            <input type="number" id="pen-bet-amt" placeholder="Bet Stake (ETB)" class="bg-black/50 text-xs text-white p-3 rounded-xl border border-white/10 font-bold focus:outline-none w-full">
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── VIEW 5: TINY ROULETTE (SPIN TABLE REEL) ─── -->
+      <div id="view-roulette" class="view-content hidden flex flex-col gap-4">
+        <div class="bg-brandCard border border-white/5 rounded-3xl p-5 flex flex-col items-center gap-4 text-center">
+          <div>
+            <span class="bg-brandGreen text-white text-[9px] font-black px-2 py-0.5 rounded">TINY SPIN ROULETTE</span>
+            <p class="text-xs text-gray-400 mt-1">Spin the virtual pocket slot to win immediate multiplier awards</p>
+          </div>
+
+          <!-- Reel board -->
+          <div class="flex bg-black/60 border border-white/10 p-5 rounded-3xl font-mono text-4xl leading-none tracking-widest my-2">
+            <span id="spin-reel-item">🎡</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 max-w-xs mx-auto w-full">
+            <input type="number" id="roulette-bet-amt" placeholder="Bet Stake" class="bg-black/40 text-xs p-3 rounded-xl border border-white/10 font-bold focus:outline-none">
+            <button onclick="spinTinyRoulette()" class="bg-brandGreen text-white font-black text-xs rounded-xl active:scale-95 transition py-3">SPIN WHEEL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── VIEW 6: CASHIER PORTAL (TELEBIRR & WITHDRAW) ─── -->
+      <div id="view-cashier" class="view-content hidden flex flex-col gap-4">
+        <div class="grid grid-cols-2 gap-2 bg-[#141a16] p-1 rounded-xl">
+          <button onclick="toggleCashierMenu('deposit')" id="cashier-btn-dep" class="py-2.5 rounded-lg text-xs font-black bg-brandGreen text-white transition">Deposit</button>
+          <button onclick="toggleCashierMenu('withdraw')" id="cashier-btn-wth" class="py-2.5 rounded-lg text-xs font-black text-gray-400 transition">Withdraw</button>
+        </div>
+
+        <!-- Telebirr Deposit Instructions -->
+        <div id="cashier-deposit-panel" class="flex flex-col gap-4">
+          <div class="bg-brandCard p-5 rounded-3xl border border-white/5 flex flex-col gap-4 text-xs">
+            <h3 class="font-extrabold text-base text-white">Telebirr Direct Deposit Option</h3>
+            <p class="text-gray-400">Make your manual payment directly to Shamil on Telebirr:</p>
+
+            <div class="bg-black/35 p-4 rounded-2xl border border-white/10 text-center font-mono flex flex-col gap-1">
+              <span class="text-[9px] text-gray-500">RECIPIENT MERCHANT:</span>
+              <span class="text-lg text-brandGold font-black tracking-widest">0935140409</span>
+              <span class="text-[10px] text-white font-bold uppercase">(SHAMIL)</span>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <div>
+                <label class="text-[10px] text-gray-400 font-bold block mb-1">DEPOSIT STAKE (ETB)</label>
+                <input type="number" id="deposit-amount-field" placeholder="Minimum 50 ETB" class="w-full bg-[#1e2420] text-xs text-white p-3 rounded-xl border border-[#2d3630] focus:outline-none focus:border-brandGreen font-bold">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-400 font-bold block mb-1">TELEBIRR REF CODE ID</label>
+                <input type="text" id="deposit-ref-field" placeholder="Enter Ref code" class="w-full bg-[#1e2420] text-xs text-white p-3 rounded-xl border border-[#2d3630] focus:outline-none focus:border-brandGreen font-mono font-bold uppercase">
+              </div>
+              <button onclick="submitTelebirrDepositSlip()" class="w-full bg-brandGreen hover:bg-brandGreenHover text-white font-black py-3.5 rounded-xl transition">
+                Submit Slip For Admin Approval
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bank Withdraw Panel -->
+        <div id="cashier-withdraw-panel" class="hidden flex flex-col gap-4">
+          <div class="bg-brandCard p-5 rounded-3xl border border-white/5 flex flex-col gap-4">
+            <h3 class="font-bold text-sm">Request Bank Withdrawal</h3>
+            <div class="flex flex-col gap-3">
+              <input type="text" id="wth-bank" placeholder="Enter Bank Name (CBE, Awash, etc)" class="w-full bg-[#1e2420] text-xs text-white p-3 rounded-xl border border-[#2d3630] focus:outline-none font-bold">
+              <input type="text" id="wth-acc-num" placeholder="Enter Account Number" class="w-full bg-[#1e2420] text-xs text-white p-3 rounded-xl border border-[#2d3630] focus:outline-none font-mono">
+              <input type="number" id="wth-amt" placeholder="Amount (Minimum 100 ETB)" class="w-full bg-[#1e2420] text-xs text-white p-3 rounded-xl border border-[#2d3630] focus:outline-none font-bold">
+              <button onclick="submitWithdrawSlip()" class="w-full bg-brandGreen text-white font-black text-xs py-3 rounded-xl">Confirm Withdrawal</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- View: History Slips Logs -->
+      <div id="view-history" class="view-content hidden flex flex-col gap-4">
+        <div class="bg-brandCard p-5 rounded-3xl border border-white/5">
+          <h3 class="font-bold text-sm">Account Action Logs</h3>
+          <div id="logs-container" class="flex flex-col gap-2 mt-3 max-h-72 overflow-y-auto no-scrollbar">
+            <p class="text-xs text-gray-500 text-center py-4">No logged slips inside.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- View: Profile screen -->
+      <div id="view-profile" class="view-content hidden flex flex-col gap-4">
+        <div class="bg-brandCard p-5 rounded-3xl border border-white/5 flex flex-col gap-3">
+          <p id="prof-phone-display" class="font-bold text-sm text-gray-400">+2519xxxxxxxx</p>
+          <button onclick="logOut()" class="w-full bg-red-600/30 text-red-300 font-bold text-xs py-2.5 rounded-xl">Logout Account</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Bottom Sticky Nav (Screen 2 Perfect layout) -->
+    <nav class="fixed bottom-0 left-0 right-0 p-4 bg-[#141a16]/95 backdrop-blur-xl border-t border-white/5 flex justify-between items-center z-30 max-w-lg mx-auto shadow-2xl">
+      <button onclick="switchMainTab('home')" id="nav-home" class="flex flex-col items-center gap-1 flex-1 text-brandGreen transition">
+        <span class="text-lg"><i class="fa-solid fa-house"></i></span>
+        <span class="text-[9px] font-bold">Home</span>
+      </button>
+      <button onclick="switchMainTab('aviator')" id="nav-aviator" class="flex flex-col items-center gap-1 flex-1 text-gray-500 transition">
+        <span class="text-lg"><i class="fa-solid fa-plane-up"></i></span>
+        <span class="text-[9px] font-bold">Crash</span>
+      </button>
+      <button onclick="switchMainTab('cashier')" id="nav-cashier" class="flex flex-col items-center gap-1 flex-1 text-gray-500 transition">
+        <span class="text-lg"><i class="fa-solid fa-wallet"></i></span>
+        <span class="text-[9px] font-bold">Cashier</span>
+      </button>
+      <button onclick="switchMainTab('history')" id="nav-history" class="flex flex-col items-center gap-1 flex-1 text-gray-500 transition">
+        <span class="text-lg"><i class="fa-solid fa-receipt"></i></span>
+        <span class="text-[9px] font-bold">Bet Slip</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- ================= MASTER CONTROLLERS: THE HIDDEN ADMIN CONTROL PANEL ================= -->
+  <div id="admin-portal" class="hidden max-w-lg w-full mx-auto px-4 py-6 z-40 relative">
+    <div class="bg-brandCard border-2 border-yellow-500 rounded-3xl p-5 flex flex-col gap-4">
+      <h2 class="font-black text-base border-b border-white/5 pb-2 text-white">⚙️ Shamil's AmoleBet Admin Dashboard</h2>
+
+      <div>
+        <h4 class="font-extrabold text-xs text-gray-400 uppercase tracking-widest mb-3">Pending User Deposit Slips</h4>
+        <div id="admin-deposits-list" class="flex flex-col gap-2 max-h-56 overflow-y-auto no-scrollbar">
+          <p class="text-xs text-gray-500 py-3 text-center">No pending Telebirr slips in review queue.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FLOATING REPLICATED CHAT WIDGET (EXACT REPLICA FROM SCREENSHOT) ================= -->
+  <div class="fixed bottom-24 right-4 z-40 flex flex-col items-end gap-2.5">
+    
+    <!-- Collapsible Chat Window dialog -->
+    <div id="chat-window" class="hidden w-72 h-80 bg-[#141a16] border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+      <div class="bg-brandGreen text-white p-3 flex justify-between items-center font-bold text-xs">
+        <span>🟢 Support Operator (Shamil)</span>
+        <button onclick="toggleChatDisplay()" class="text-xs">✕</button>
+      </div>
+      <div id="chat-scroller" class="flex-1 p-3 overflow-y-auto flex flex-col gap-2 text-[11px] no-scrollbar">
+        <div class="bg-brandGreen/20 text-white p-2.5 rounded-xl rounded-tl-none w-4/5 leading-relaxed">
+          Welcome to AmoleBet! Transfer direct deposits to Telebirr: <span class="text-brandGreen font-bold">0935140409</span> (Shamil). Please send your transaction code here to complete approval.
+        </div>
+      </div>
+    </div>
+
+    <!-- Replicated White helper prompt buttons with green borders (Screenshot 1) -->
+    <div id="chat-prompts" class="flex flex-col items-end gap-1.5">
+      <div class="bg-white text-black text-[11px] font-semibold py-1.5 px-3.5 rounded-xl shadow border border-gray-100">
+        How can I help you?
+      </div>
+      <button onclick="sendQuickMessage('I have a question')" class="bg-white text-gray-800 text-[10px] font-bold py-1.5 px-3.5 rounded-full border border-brandGreen hover:bg-gray-50 transition">
+        I have a question
+      </button>
+      <button onclick="sendQuickMessage('Tell me more')" class="bg-white text-gray-800 text-[10px] font-bold py-1.5 px-3.5 rounded-full border border-brandGreen hover:bg-gray-50 transition">
+        Tell me more
+      </button>
+    </div>
+
+    <!-- Green Float Button with Red '1' Indicator -->
+    <button onclick="toggleChatDisplay()" class="w-12 h-12 rounded-full bg-brandGreen text-white flex items-center justify-center text-xl shadow-2xl relative hover:brightness-105 transition">
+      <i class="fa-regular fa-comment-dots"></i>
+      <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full border-2 border-appDarkBg text-[9px] font-black flex items-center justify-center">1</span>
+    </button>
+  </div>
+
+  <!-- ================= SYSTEM CORE PROGRAM LOGIC ================= -->
+  <script>
+    // SYSTEM DATABASES MOCKED LOCALLY
+    let usersDb = JSON.parse(localStorage.getItem('ab_users_store')) || {};
+    let loggedUser = localStorage.getItem('ab_logged_phone') || "";
+    let isAuth = localStorage.getItem('ab_is_auth') === 'true';
+    let transactionsList = JSON.parse(localStorage.getItem('ab_transactions_list')) || [];
+
+    // Signup workflow cache variables
+    let tempPhone = "";
+    let tempPassword = "";
+
+    function appInit() {
+      if (isAuth && loggedUser && usersDb[loggedUser]) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('main-portal').classList.remove('hidden');
+        document.getElementById('prof-phone-display').innerText = loggedUser;
+        updateUI();
+        initAviatorCanvas();
+      } else {
+        document.getElementById('auth-screen').classList.remove('hidden');
+        document.getElementById('main-portal').classList.add('hidden');
+      }
+      syncAdminPanel();
+    }
+
+    function updateUI() {
+      if (loggedUser && usersDb[loggedUser]) {
+        document.getElementById('user-balance-lbl').innerText = usersDb[loggedUser].balance.toFixed(2);
+      }
+      renderUserActivityLogs();
+    }
+
+    // AUTH SWITCH CONTROLLERS
+    function toggleAuthTab(tab) {
+      document.getElementById('otp-fields').classList.add('hidden');
+      if (tab === 'signin') {
+        document.getElementById('signin-fields').classList.remove('hidden');
+        document.getElementById('signup-fields').classList.add('hidden');
+        document.getElementById('tab-signin').className = "py-2 rounded-lg text-xs font-bold bg-[#252b27] text-white transition border border-white/5";
+        document.getElementById('tab-signup').className = "py-2 rounded-lg text-xs font-bold text-gray-400 transition";
+      } else {
+        document.getElementById('signup-fields').classList.remove('hidden');
+        document.getElementById('signin-fields').classList.add('hidden');
+        document.getElementById('tab-signup').className = "py-2 rounded-lg text-xs font-bold bg-[#252b27] text-white transition border border-white/5";
+        document.getElementById('tab-signin').className = "py-2 rounded-lg text-xs font-bold text-gray-400 transition";
+      }
+    }
+
+    function viewPassword(id) {
+      const field = document.getElementById(id);
+      field.type = field.type === 'password' ? 'text' : 'password';
+    }
+
+    // REGISTRATION STEP 1
+    function triggerVerificationStep() {
+      const phoneInput = document.getElementById('reg-phone').value.trim();
+      const pass = document.getElementById('reg-pass').value.trim();
+      const confirm = document.getElementById('reg-confirm').value.trim();
+
+      if (!phoneInput || !pass || !confirm) {
+        alert("Fill in all Phone and Password details.");
+        return;
+      }
+      if (pass !== confirm) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      tempPhone = "+251" + phoneInput.replace(/^0+/, '');
+      tempPassword = pass;
+
+      document.getElementById('signup-fields').classList.add('hidden');
+      document.getElementById('otp-fields').classList.remove('hidden');
+    }
+
+    // REGISTRATION STEP 2 (Verify and Activate action)
+    function verifyUserOTP() {
+      const code = document.getElementById('otp-input').value.trim();
+      if (code !== "1234") {
+        alert("Incorrect verification code. Type code '1234' to activate your account.");
+        return;
+      }
+
+      if (usersDb[tempPhone]) {
+        alert("This account is already registered. Logging you in directly.");
+        loginUserDirectly(tempPhone);
+        return;
+      }
+
+      // Create new player record with free ETB balance matching screenshot
+      usersDb[tempPhone] = {
+        password: tempPassword,
+        balance: 0.44
+      };
+      localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+
+      loginUserDirectly(tempPhone);
+    }
+
+    function loginUser() {
+      const phone = "+251" + document.getElementById('login-phone').value.trim().replace(/^0+/, '');
+      const pass = document.getElementById('login-pass').value.trim();
+
+      if (!usersDb[phone] || usersDb[phone].password !== pass) {
+        alert("Incorrect Phone or Password.");
+        return;
+      }
+
+      loginUserDirectly(phone);
+    }
+
+    function loginUserDirectly(phone) {
+      loggedUser = phone;
+      isAuth = true;
+      localStorage.setItem('ab_logged_phone', loggedUser);
+      localStorage.setItem('ab_is_auth', 'true');
+      
+      document.getElementById('otp-fields').classList.add('hidden');
+      appInit();
+    }
+
+    function logOut() {
+      isAuth = false;
+      localStorage.removeItem('ab_is_auth');
+      appInit();
+    }
+
+    // INTERFACE NAVIGATION TABS
+    function switchMainTab(viewId) {
+      document.querySelectorAll('.view-content').forEach(v => v.classList.add('hidden'));
+      document.querySelectorAll('nav button').forEach(b => {
+        b.classList.remove('text-brandGreen');
+        b.classList.add('text-gray-500');
+      });
+
+      document.getElementById(`view-${viewId}`).classList.remove('hidden');
+      const activeNav = document.getElementById(`nav-${viewId}`);
+      if (activeNav) {
+        activeNav.classList.remove('text-gray-500');
+        activeNav.classList.add('text-brandGreen');
+      }
+    }
+
+    function toggleCashierMenu(mode) {
+      document.getElementById('cashier-deposit-panel').classList.add('hidden');
+      document.getElementById('cashier-withdraw-panel').classList.add('hidden');
+      document.getElementById('cashier-btn-dep').className = "py-2.5 rounded-lg text-xs font-black text-gray-400 transition";
+      document.getElementById('cashier-btn-wth').className = "py-2.5 rounded-lg text-xs font-black text-gray-400 transition";
+
+      document.getElementById(`cashier-${mode}-panel`).classList.remove('hidden');
+      document.getElementById(`cashier-btn-${mode === 'deposit' ? 'dep' : 'wth'}`).className = "py-2.5 rounded-lg text-xs font-black bg-brandGreen text-white transition";
+    }
+
+    function openCashier(mode) {
+      switchMainTab('cashier');
+      toggleCashierMenu(mode);
+    }
+
+    // ================== GAME ENGINE 1: CHICKEN ROAD 2.0 ==================
+    let chActive = false;
+    let chRow = 3; // Start from bottom row (row 3, then 2, 1, 0)
+    let chStake = 0;
+    let chMultiplier = 1.00;
+    let chMineCols = [0, 0, 0, 0]; // Index of trap columns in each row
+
+    function startChickenGame() {
+      const stake = parseFloat(document.getElementById('ch-bet-amt').value);
+      if (isNaN(stake) || stake < 5 || stake > usersDb[loggedUser].balance) {
+        alert("Enter a valid stake bet.");
+        return;
+      }
+
+      usersDb[loggedUser].balance -= stake;
+      chStake = stake;
+      chActive = true;
+      chRow = 3;
+      chMultiplier = 1.00;
+      updateUI();
+
+      // Seed chicken roadmap traps randomly
+      for (let i = 0; i < 4; i++) {
+        chMineCols[i] = Math.floor(Math.random() * 2);
+      }
+
+      document.getElementById('ch-act-btn').classList.add('hidden');
+      document.getElementById('ch-cash-btn').classList.remove('hidden');
+      document.getElementById('ch-cash-btn').innerText = `Cash Out: ${stake.toFixed(2)} ETB`;
+      document.getElementById('ch-multi-lbl').innerText = "1.00x";
+
+      enableChickenRow(3);
+    }
+
+    function enableChickenRow(rowNum) {
+      // Disable all tiles first
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 2; c++) {
+          const btn = document.getElementById(`ch-tile-${r}-${c}`);
+          btn.disabled = r !== rowNum;
+          btn.innerText = `Lane ${c+1}`;
+          btn.className = r === rowNum ? "bg-brandGold text-black py-3 rounded-xl border border-white/10 text-xs font-bold" : "bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40";
+        }
+      }
+    }
+
+    function playChickenStep(row, col) {
+      if (!chActive || row !== chRow) return;
+
+      const isTrap = chMineCols[row] === col;
+      const clickedBtn = document.getElementById(`ch-tile-${row}-${col}`);
+
+      if (isTrap) {
+        // Boom! Stepped on fried chicken
+        clickedBtn.innerText = "🍗 BUST";
+        clickedBtn.className = "bg-red-600 text-white py-3 rounded-xl text-xs font-bold";
+        alert("BOOM! You stepped on a Trap! Wager Lost.");
+        logAction("🐓", "Lost Chicken Road 2.0 Bet", `-${chStake.toFixed(2)} ETB`);
+        resetChickenGameUI();
+      } else {
+        // Safe step
+        clickedBtn.innerText = "🐓 SAFE";
+        clickedBtn.className = "bg-brandGreen text-white py-3 rounded-xl text-xs font-bold";
+
+        chMultiplier += 0.45;
+        document.getElementById('ch-multi-lbl').innerText = chMultiplier.toFixed(2) + "x";
+        document.getElementById('ch-cash-btn').innerText = `Cash Out: ${(chStake * chMultiplier).toFixed(2)} ETB`;
+
+        if (chRow > 0) {
+          chRow--;
+          enableChickenRow(chRow);
+        } else {
+          // Reached the end! Auto-cashout
+          cashoutChickenGame();
+        }
+      }
+    }
+
+    function cashoutChickenGame() {
+      if (!chActive) return;
+      const winVal = chStake * chMultiplier;
+      usersDb[loggedUser].balance += winVal;
+      localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+
+      logAction("🐓", `Chicken Road Cashout (${chMultiplier.toFixed(2)}x)`, `+${winVal.toFixed(2)} ETB`);
+      alert(`WINNER! You cashed out successfully for ${winVal.toFixed(2)} ETB!`);
+      resetChickenGameUI();
+    }
+
+    function resetChickenGameUI() {
+      chActive = false;
+      document.getElementById('ch-act-btn').classList.remove('hidden');
+      document.getElementById('ch-cash-btn').classList.add('hidden');
+      enableChickenRow(3);
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 2; c++) {
+          const btn = document.getElementById(`ch-tile-${r}-${c}`);
+          btn.disabled = true;
+          btn.innerText = `Lane ${c+1}`;
+          btn.className = "bg-[#242b26] py-3 rounded-xl border border-white/5 text-xs font-bold disabled:opacity-40";
+        }
+      }
+      updateUI();
+    }
+
+    // ================== GAME ENGINE 2: AVIATOR (CANVAS TRACING) ==================
+    let canvas, ctx;
+    let isFlying = false;
+    let avMulti = 1.00;
+    let avLoop;
+    let lockedStake = 0;
+    let plotPoints = [];
+
+    function initAviatorCanvas() {
+      canvas = document.getElementById('aviator-canvas');
+      if (canvas) {
+        ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        drawStaticGrid();
+      }
+    }
+
+    function drawStaticGrid() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.lineWidth = 1;
+      for (let i = 40; i < canvas.width; i += 40) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+      }
+      for (let i = 30; i < canvas.height; i += 30) {
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+      }
+    }
+
+    function runAviator() {
+      const stake = parseFloat(document.getElementById('av-bet').value);
+      const btn = document.getElementById('av-btn');
+
+      if (!isFlying) {
+        if (isNaN(stake) || stake < 10 || stake > usersDb[loggedUser].balance) {
+          alert("Minimum bet is 10 ETB, check your balance.");
+          return;
+        }
+
+        usersDb[loggedUser].balance -= stake;
+        lockedStake = stake;
+        updateUI();
+
+        isFlying = true;
+        avMulti = 1.00;
+        plotPoints = [];
+
+        document.getElementById('av-multiplier').innerText = "1.00x";
+        document.getElementById('av-multiplier').className = "absolute text-5xl font-black text-green-400 font-mono";
+        document.getElementById('av-bust-lbl').classList.add('hidden');
+
+        btn.innerText = "Cash Out";
+        btn.className = "bg-red-600 text-white font-black rounded-xl text-xs transition";
+
+        const crashPoint = (Math.random() * 4 + 1.05).toFixed(2);
+
+        avLoop = setInterval(() => {
+          avMulti += 0.04;
+          document.getElementById('av-multiplier').innerText = avMulti.toFixed(2) + "x";
+
+          // Plot vectors
+          const progress = (avMulti - 1) / 4;
+          const x = 30 + progress * (canvas.width - 60);
+          const y = (canvas.height - 30) - Math.pow(progress, 1.8) * (canvas.height - 60);
+          plotPoints.push({x, y});
+
+          drawFlightCurve();
+
+          if (avMulti >= crashPoint) {
+            clearInterval(avLoop);
+            executeCrash();
+          }
+        }, 100);
+
+      } else {
+        clearInterval(avLoop);
+        const winReward = lockedStake * avMulti;
+        usersDb[loggedUser].balance += winReward;
+        localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+
+        logAction("🏆", `Aviator payout (${avMulti.toFixed(2)}x)`, `+${winReward.toFixed(2)} ETB`);
+        alert(`Cashout Successful! Payout: ${winReward.toFixed(2)} ETB!`);
+        resetAviator();
+      }
+    }
+
+    function drawFlightCurve() {
+      drawStaticGrid();
+      if (plotPoints.length < 2) return;
+      ctx.beginPath();
+      ctx.strokeStyle = "#00a859";
+      ctx.lineWidth = 3;
+      ctx.moveTo(plotPoints[0].x, plotPoints[0].y);
+      for (let i = 1; i < plotPoints.length; i++) {
+        ctx.lineTo(plotPoints[i].x, plotPoints[i].y);
+      }
+      ctx.stroke();
+
+      const head = plotPoints[plotPoints.length - 1];
+      ctx.font = "20px sans-serif";
+      ctx.fillText("✈️", head.x - 10, head.y + 6);
+    }
+
+    function executeCrash() {
+      isFlying = false;
+      document.getElementById('av-multiplier').className = "absolute text-5xl font-black text-red-600 font-mono";
+      document.getElementById('av-multiplier').innerText = "Busted";
+      document.getElementById('av-bust-lbl').classList.remove('hidden');
+      logAction("💥", "Lost Aviator Bet", `-${lockedStake.toFixed(2)} ETB`);
+      setTimeout(resetAviator, 2500);
+    }
+
+    function resetAviator() {
+      clearInterval(avLoop);
+      isFlying = false;
+      const btn = document.getElementById('av-btn');
+      btn.innerText = "Place Bet";
+      btn.className = "bg-brandGreen text-white font-black rounded-xl text-xs transition";
+      document.getElementById('av-bust-lbl').classList.add('hidden');
+      drawStaticGrid();
+      updateUI();
+    }
+
+    // ================== GAME ENGINE 3: PENALTY SHOT ==================
+    function shootPenalty(target) {
+      const stake = parseFloat(document.getElementById('pen-bet-amt').value);
+      if (isNaN(stake) || stake < 10 || stake > usersDb[loggedUser].balance) {
+        alert("Enter a valid penalty stake bet.");
+        return;
+      }
+
+      usersDb[loggedUser].balance -= stake;
+      updateUI();
+
+      const goalieDirs = ['left', 'center', 'right'];
+      const goalieJump = goalieDirs[Math.floor(Math.random() * 3)];
+
+      // Move goalie emoji
+      const goalie = document.getElementById('goalie-emoji');
+      if (goalieJump === 'left') {
+        goalie.style.left = '15%';
+      } else if (goalieJump === 'right') {
+        goalie.style.left = '85%';
+      } else {
+        goalie.style.left = '50%';
+      }
+
+      setTimeout(() => {
+        if (target === goalieJump) {
+          // Saved! Goal Keeper blocked
+          alert(`BLOCKED! The Goalkeeper leaped ${goalieJump.toUpperCase()} and saved your shot!`);
+          logAction("⚽", `Penalty Blocked (${target.toUpperCase()})`, `-${stake.toFixed(2)} ETB`);
+        } else {
+          // Goal! Payout 2x
+          const reward = stake * 2;
+          usersDb[loggedUser].balance += reward;
+          localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+
+          alert(`GOAL!! You scored past the Goalkeeper! Won ${reward.toFixed(2)} ETB!`);
+          logAction("⚽", `Scored Penalty Kick`, `+${reward.toFixed(2)} ETB`);
+        }
+
+        // Reset goalkeeper positioning
+        setTimeout(() => {
+          goalie.style.left = '50%';
+        }, 1500);
+
+        updateUI();
+      }, 500);
+    }
+
+    // ================== GAME ENGINE 4: TINY SPIN ROULETTE ==================
+    const wheelPocketItems = ["💎 Win 5x", "🍋 Win 2x", "🍒 Loss", "⭐ Win 10x", "🍊 Win 1.5x", "🍇 Loss", "🔔 Win 3x"];
+    function spinTinyRoulette() {
+      const stake = parseFloat(document.getElementById('roulette-bet-amt').value);
+      if (isNaN(stake) || stake < 10 || stake > usersDb[loggedUser].balance) {
+        alert("Enter a valid roulette stake.");
+        return;
+      }
+
+      usersDb[loggedUser].balance -= stake;
+      updateUI();
+
+      let counter = 0;
+      const spinTimer = setInterval(() => {
+        document.getElementById('spin-reel-item').innerText = wheelPocketItems[Math.floor(Math.random() * wheelPocketItems.length)];
+        counter++;
+
+        if (counter >= 12) {
+          clearInterval(spinTimer);
+          evaluateRouletteResult(stake);
+        }
+      }, 80);
+    }
+
+    function evaluateRouletteResult(stake) {
+      const outcome = document.getElementById('spin-reel-item').innerText;
+      
+      if (outcome.includes("Loss")) {
+        alert("No Match! Your wager lost.");
+        logAction("🎰", "Lost Roulette Spin", `-${stake.toFixed(2)} ETB`);
+      } else {
+        const mult = parseFloat(outcome.match(/[\d.]+/)[0]);
+        const payout = stake * mult;
+        usersDb[loggedUser].balance += payout;
+        localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+
+        alert(`WINNER! Outcome landed: ${outcome}! Payout: ${payout.toFixed(2)} ETB!`);
+        logAction("🎰", `Roulette Win (${mult}x)`, `+${payout.toFixed(2)} ETB`);
+      }
+      updateUI();
+    }
+
+    // ================== CASHIER GATEWAY & CODES SUBMISSION ==================
+    function submitTelebirrDepositSlip() {
+      const amount = parseFloat(document.getElementById('deposit-amount-field').value);
+      const refCode = document.getElementById('deposit-ref-field').value.trim().toUpperCase();
+
+      if (isNaN(amount) || amount < 50) {
+        alert("Minimum deposit limit is 50 ETB.");
+        return;
+      }
+      if (!refCode) {
+        alert("Please provide your Telebirr Transaction Reference ID.");
+        return;
+      }
+
+      const txnRecord = {
+        id: "TXN_" + Date.now(),
+        userPhone: loggedUser,
+        type: 'deposit',
+        amount: amount,
+        reference: refCode,
+        status: 'pending',
+        timestamp: new Date().toLocaleTimeString()
+      };
+
+      transactionsList.unshift(txnRecord);
+      localStorage.setItem('ab_transactions_list', JSON.stringify(transactionsList));
+
+      alert(`Your transaction slip of ${amount} ETB has been successfully logged! Toggle 'Admin Panel' at the very top of the screen to view and manually Approve your slip.`);
+      
+      document.getElementById('deposit-amount-field').value = "";
+      document.getElementById('deposit-ref-field').value = "";
+
+      updateUI();
+      syncAdminPanel();
+    }
+
+    function submitWithdrawSlip() {
+      const bank = document.getElementById('wth-bank').value.trim();
+      const account = document.getElementById('wth-acc-num').value.trim();
+      const amt = parseFloat(document.getElementById('wth-amt').value);
+
+      if (!bank || !account || isNaN(amt) || amt < 100) {
+        alert("Minimum withdrawal limit is 100 ETB.");
+        return;
+      }
+
+      if (amt > usersDb[loggedUser].balance) {
+        alert("Insufficient balance to execute cashout.");
+        return;
+      }
+
+      usersDb[loggedUser].balance -= amt;
+      localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+
+      const txnRecord = {
+        id: "WTH_" + Date.now(),
+        userPhone: loggedUser,
+        type: 'withdraw',
+        amount: amt,
+        bank: bank,
+        account: account,
+        status: 'pending',
+        timestamp: new Date().toLocaleTimeString()
+      };
+
+      transactionsList.unshift(txnRecord);
+      localStorage.setItem('ab_transactions_list', JSON.stringify(transactionsList));
+
+      alert(`Bank withdrawal slip logged!`);
+      document.getElementById('wth-bank').value = "";
+      document.getElementById('wth-acc-num').value = "";
+      document.getElementById('wth-amt').value = "";
+
+      updateUI();
+      syncAdminPanel();
+    }
+
+    // ================== ADMIN MANAGER CONTROL PANEL ==================
+    function changeRole(role) {
+      if (role === 'player') {
+        document.getElementById('role-player-btn').className = "bg-black text-white px-2 py-0.5 rounded font-bold uppercase";
+        document.getElementById('role-admin-btn').className = "bg-black/20 text-black px-2 py-0.5 rounded font-bold uppercase";
+        document.getElementById('main-portal').classList.remove('hidden');
+        document.getElementById('admin-portal').classList.add('hidden');
+      } else {
+        document.getElementById('role-admin-btn').className = "bg-black text-white px-2 py-0.5 rounded font-bold uppercase";
+        document.getElementById('role-player-btn').className = "bg-black/20 text-black px-2 py-0.5 rounded font-bold uppercase";
+        document.getElementById('main-portal').classList.add('hidden');
+        document.getElementById('admin-portal').classList.remove('hidden');
+        syncAdminPanel();
+      }
+    }
+
+    function syncAdminPanel() {
+      const pendings = transactionsList.filter(t => t.type === 'deposit' && t.status === 'pending');
+      document.getElementById('pending-count-badge').innerText = pendings.length;
+
+      const container = document.getElementById('admin-deposits-list');
+      if (pendings.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-500 py-3 text-center">No pending Telebirr slips in review queue.</p>`;
+      } else {
+        container.innerHTML = pendings.map(txn => `
+          <div class="bg-[#1e2420] border border-white/5 p-4 rounded-xl flex flex-col gap-2 text-xs">
+            <div class="flex justify-between font-bold text-gray-400">
+              <span>👤 User: ${txn.userPhone}</span>
+              <span class="text-brandGold">Ref: ${txn.reference}</span>
+            </div>
+            <div class="flex justify-between items-center mt-1">
+              <span class="text-sm font-black text-white">Amount: ${txn.amount.toFixed(2)} ETB</span>
+              <div class="flex gap-1.5">
+                <button onclick="approveTransaction('${txn.id}')" class="bg-brandGreen text-white px-3 py-1 rounded-lg font-bold">Approve</button>
+                <button onclick="rejectTransaction('${txn.id}')" class="bg-red-600/30 text-red-400 px-3 py-1 rounded-lg font-bold">Decline</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function approveTransaction(id) {
+      const idx = transactionsList.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        transactionsList[idx].status = 'approved';
+        const targetPhone = transactionsList[idx].userPhone;
+        if (usersDb[targetPhone]) {
+          usersDb[targetPhone].balance += transactionsList[idx].amount;
+        }
+        localStorage.setItem('ab_transactions_list', JSON.stringify(transactionsList));
+        localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+        alert("Transaction approved! Balance credited.");
+        updateUI();
+        syncAdminPanel();
+      }
+    }
+
+    function rejectTransaction(id) {
+      const idx = transactionsList.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        transactionsList[idx].status = 'declined';
+        localStorage.setItem('ab_transactions_list', JSON.stringify(transactionsList));
+        alert("Transaction declined!");
+        syncAdminPanel();
+      }
+    }
+
+    // SPORTS WAGER ACTION
+    function sportsBetStake(team, odd) {
+      const input = prompt(`Enter stake amount to place a wager on: ${team} (${odd}x):`, "50");
+      const stake = parseFloat(input);
+
+      if (isNaN(stake) || stake < 10 || stake > usersDb[loggedUser].balance) {
+        alert("Bet rejected. Minimum match stake is 10 ETB.");
+        return;
+      }
+
+      usersDb[loggedUser].balance -= stake;
+      localStorage.setItem('ab_users_store', JSON.stringify(usersDb));
+
+      logAction("⚽", `Match bet placed on ${team}`, `-${stake.toFixed(2)} ETB`);
+      alert("Bet placed successfully!");
+      updateUI();
+    }
+
+    // ================== USER ACTIVITY LOGS LOGGER ==================
+    function logAction(emoji, label, amtStr) {
+      const record = {
+        id: "ACT_" + Date.now(),
+        userPhone: loggedUser,
+        type: 'game_play',
+        label: label,
+        emoji: emoji,
+        amount: amtStr,
+        timestamp: new Date().toLocaleTimeString()
+      };
+      transactionsList.unshift(record);
+      localStorage.setItem('ab_transactions_list', JSON.stringify(transactionsList));
+      updateUI();
+    }
+
+    function renderUserActivityLogs() {
+      const container = document.getElementById('logs-container');
+      const userLogs = transactionsList.filter(t => t.userPhone === loggedUser);
+
+      if (userLogs.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">No logged slips inside.</p>`;
+        return;
+      }
+
+      container.innerHTML = userLogs.map(log => {
+        let amtStyle = "text-yellow-500";
+        let resolvedAmount = log.amount;
+
+        if (log.type === 'deposit') {
+          resolvedAmount = `+${log.amount.toFixed(2)} ETB`;
+          amtStyle = log.status === 'approved' ? "text-brandGreen font-bold" : log.status === 'declined' ? "text-red-500 font-bold" : "text-yellow-500 font-bold";
+        } else if (log.type === 'withdraw') {
+          resolvedAmount = `-${log.amount.toFixed(2)} ETB`;
+          amtStyle = log.status === 'approved' ? "text-brandGreen font-bold" : log.status === 'declined' ? "text-red-500 font-bold" : "text-yellow-500 font-bold";
+        }
+
+        const labelName = log.type === 'deposit' ? `Telebirr Deposit (${log.status})` : log.type === 'withdraw' ? `Bank Withdrawal (${log.status})` : log.label;
+        const iconEmoji = log.type === 'deposit' ? "📥" : log.type === 'withdraw' ? "🏦" : log.emoji;
+
+        return `
+          <div class="bg-black/40 border border-white/5 p-3.5 rounded-xl flex justify-between items-center text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lg">${iconEmoji}</span>
+              <div>
+                <p class="font-extrabold text-white">${labelName}</p>
+                <p class="text-[8px] text-gray-500">${log.timestamp || 'Just Now'}</p>
+              </div>
+            </div>
+            <span class="font-black font-mono ${amtStyle}">${resolvedAmount}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // CHAT ENGINE
+    function toggleChatDisplay() {
+      document.getElementById('chat-window').classList.toggle('hidden');
+    }
+
+    function sendQuickMessage(type) {
+      const area = document.getElementById('chat-scroller');
+      area.insertAdjacentHTML('beforeend', `
+        <div class="bg-brandCard border border-white/5 text-white p-2 rounded-xl rounded-tr-none w-4/5 self-end ml-auto text-right font-medium">
+          ${type}
+        </div>
+      `);
+
+      document.getElementById('chat-prompts').classList.add('hidden');
+      document.getElementById('chat-window').classList.remove('hidden');
+
+      setTimeout(() => {
+        let answer = "";
+        if (type === 'I have a question') {
+          answer = "How can we help? If you have logged a deposit slip, Shamil will review and approve it. Toggle the yellow Admin Panel at the very top of the screen to manually check and approve it yourself!";
+        } else {
+          answer = "AmoleBet matches 100% of your initial deposits! Transfer any amount over 50 ETB to 0935140409 (Shamil) on Telebirr and submit your ticket code inside.";
+        }
+        
+        area.insertAdjacentHTML('beforeend', `
+          <div class="bg-brandGreen/20 text-white p-2.5 rounded-xl rounded-tl-none w-4/5 leading-relaxed mt-2">
+            ${answer}
+          </div>
+        `);
+        area.scrollTop = area.scrollHeight;
+      }, 1000);
+    }
+
+    window.onload = () => {
+      appInit();
+    };
+  </script>
+</body>
+</html>
